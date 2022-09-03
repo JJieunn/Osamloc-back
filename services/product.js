@@ -1,4 +1,4 @@
-const productsDao = require('../models/product');
+const productsDao = require('../models/productDao');
 
 //위클리 베스트
 /* const weeklyBest = async (orderDate) => {
@@ -10,18 +10,30 @@ const productsDao = require('../models/product');
 };
  */
 //카테고리별 제품 조회
-const readCategory = async categoryId => {
-  return await productsDao.readCategory(categoryId);
+const readCategory = async (categoryId, page) => {
+  const products = await productsDao.readCategory(categoryId, page);
+
+  products.map(data => {
+    data.products = JSON.parse(data.products);
+  });
+
+  return products;
 };
 
 //타입별 제품 조회 (잎차, 피라미드...)
 const readProductType = async (categoryId, typeId) => {
-  return await productsDao.readProductType(categoryId, typeId);
+  const products = await productsDao.readProductType(categoryId, typeId);
+
+  products.map(data => {
+    data.products = JSON.parse(data.products);
+  });
+
+  return products;
 };
 
 //리뷰순
-const reviewSort = async (categoryId, typeId) => {
-  return await productsDao.reviewSort(categoryId, typeId);
+const reviewSort = async categoryId => {
+  return await productsDao.reviewSort(categoryId);
 };
 
 //판매순

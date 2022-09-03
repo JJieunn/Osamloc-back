@@ -19,8 +19,11 @@ const productsService = require('../services/product');
 //카테고리별 제품 조회
 const readCategory = async (req, res) => {
   try {
-    const { categoryId } = req.query;
-    const categoryProducts = await productsService.readCategory(categoryId);
+    const { categoryId, page } = req.query;
+    const categoryProducts = await productsService.readCategory(
+      categoryId,
+      page
+    );
     res.status(200).json({ data: categoryProducts });
   } catch (err) {
     res.status(404).json({ message: 'ERROR' });
@@ -41,8 +44,8 @@ const readProductType = async (req, res) => {
 //리뷰순
 const reviewSort = async (req, res) => {
   try {
-    const { categoryId, typeId } = req.query;
-    const sort = await productsService.reviewSort(categoryId, typeId);
+    const { categoryId } = req.query;
+    const sort = await productsService.reviewSort(categoryId);
     res.status(200).json({ data: sort });
   } catch (err) {
     res.status(404).json({ message: 'ERROR' });
