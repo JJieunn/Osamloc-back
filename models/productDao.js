@@ -21,70 +21,79 @@ myDataSource
 
 /* const readProducts = async () => {
   const products = await myDataSource.query(
-    `SELECT 
-        name, 
-        description, 
-        type_id, 
-        category_id, 
-        thumbnail_id, 
-        price_origin, 
-        sale_rate_id,
-        sale_price,
-        created_at
-        FROM products p
-        `
+    `SELECT *
+    FROM products`
   );
   return products;
 }; */
 
 //위클리 베스트
-/* const weeklyBest = async (orderDate) => {
+const weeklyBest = async () => {
   const products = await myDataSource.query(
-    `SELECT p.*,
-    IFNULL(COUNT(o.product_id),0) AS order
-    FROM products p
-    LEFT JOIN order o ON o.product_id = p.id
-    WHERE DATE(o.order_date)>=?
-    AND o.status = 2
-    ORDER BY COUNT(o.product_id) DESC LIMIT 9`,
-    [orderDate]
+    `SELECT
+    pr.name,
+    pr.description,
+    (SELECT COUNT(w.product_id)
+      FROM products p
+      LEFT OUTER JOIN product_wishlist w
+      ON p.id = w.product_id
+      WHERE p.id = pr.id) AS likeCount,
+    COUNT(r.product_id) AS reviewCount,
+    t_i.default_img,
+    t_i.hover_img,
+    pr.price_origin,
+    s_r.sale,
+    pr.sale_price
+  FROM products pr
+  LEFT OUTER JOIN review r ON pr.id = r.product_id
+  JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+  LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+  WHERE pr.created_at > DATE_ADD(now(),interval -7 day)
+  GROUP BY pr.id
+  ORDER BY likeCount DESC
+  LIMIT 9`
   );
   return products;
-}; */
+};
 
-//카테고리별 제품 조회
-const readCategory = async (categoryId, page) => {
+//2depth + 리뷰 조회
+const readTwoDepthCategory = async (id, page) => {
   const categoryProducts = await myDataSource.query(
-    `SELECT c.id AS categoryId, c.parent_id, c.name AS category, c.level AS categoryDepth,
-      JSON_ARRAYAGG(
-        JSON_OBJECT(
-          "name", p.name, 
-          "description", p.description,
-          "type", p_t.name,
-          "thumbnailDefault", t_i.default_img,
-          "thumbnailHover", t_i.hover_img,
-          "priceOrigin", p.price_origin,
-          "saleRate", s_r.sale,
-          "salePrice", p.sale_price
-        )
-      ) AS products
-    FROM products p
-    JOIN category c ON c.id = p.category_id
-    JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
-    LEFT OUTER JOIN product_types p_t ON p_t.id = p.type_id
-    LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ?
-    GROUP BY p.category_id
+    `SELECT
+      c.name AS category,
+      t.name AS type,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.parent_id = ?
+    GROUP BY pr.id
+    ORDER BY COUNT(r.product_id) DESC
     LIMIT ?, 9`,
-    [categoryId, (page = (page - 1) * 9)]
+    [id, (page - 1) * 9]
   );
   return categoryProducts;
 };
 
 //타입별 제품 조회 (잎차, 피라미드...)
-const readProductType = async (categoryId, typeId) => {
+const readProductType = async (name, type) => {
   const products = await myDataSource.query(
-    `SELECT t.name AS productType, c.name AS category, c.level AS categoryDepth,
+    `SELECT t.name AS productType, c.name AS category,
       JSON_ARRAYAGG(
         JSON_OBJECT(
           "name", p.name,
@@ -101,149 +110,231 @@ const readProductType = async (categoryId, typeId) => {
     JOIN product_types t ON t.id = p.type_id
     JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
     LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ? AND p.type_id = ?
+    WHERE c.name = ? AND t.name = ?
     GROUP BY p.category_id`,
-    [categoryId, typeId]
+    [name, type]
   );
   return products;
 };
 
-//리뷰순
-const reviewSort = async categoryId => {
+//3depth + 리뷰순 조회
+const readCategory = async (name, page) => {
+  const categoryProducts = await myDataSource.query(
+    `SELECT
+      c.name AS category,
+      t.name AS type,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ?
+    GROUP BY pr.id
+    ORDER BY COUNT(r.product_id) DESC
+    LIMIT ?, 9`,
+    [name, (page - 1) * 9]
+  );
+  return categoryProducts;
+};
+
+//3depth + 타입 + 리뷰순
+const reviewSort = async (name, type, page) => {
   const sort = await myDataSource.query(
     `SELECT
       c.name AS category,
       t.name AS type,
-      p.name,
-      p.description,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
       COUNT(r.product_id) AS reviewCount,
       t_i.default_img,
       t_i.hover_img,
-      p.price_origin,
+      pr.price_origin,
       s_r.sale,
-      p.sale_price
-    FROM products p
-    JOIN category c ON c.id = p.category_id
-    JOIN product_types t ON t.id = p.type_id
-    LEFT OUTER JOIN review r ON p.id = r.product_id
-    JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
-    LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ?
-    GROUP BY p.id
-    ORDER BY COUNT(r.product_id) DESC`,
-    [categoryId]
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ? AND t.name IN (?)
+    GROUP BY pr.id
+    ORDER BY COUNT(r.product_id) DESC
+    LIMIT ?, 9`,
+    [name, type.split(','), (page - 1) * 9]
   );
   return sort;
 };
 
-//판매순
-/* const sortPurchase = async () => {
+//3depth + type + 판매순
+const popularSort = async (name, type, page) => {
   const sort = await myDataSource.query(
     `SELECT
-      p.name,
-      p.description,
-      COUNT(o.product_id) AS orderCount,
-      t_i.default_img,
-      t_i.hover_img,
-      p.price_origin,
-      s_r.sale,
-      p.sale_price
-    FROM products p
-    LEFT OUTER JOIN order o ON p.id = o.product_id
-    JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
-    LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ? AND p.type_id = ?
-    GROUP BY p.id
-    ORDER BY COUNT(o.product_id) DESC`
-  );
-  return sort;
-}; */
-
-//신상품순
-const newProductSort = async categoryId => {
-  const sort = await myDataSource.query(
-    `SELECT 
       c.name AS category,
       t.name AS type,
-      p.name,
-      p.description,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
       t_i.default_img,
       t_i.hover_img,
-      p.price_origin,
+      pr.price_origin,
       s_r.sale,
-      p.sale_price,
-      p.created_at
-    FROM products p
-    JOIN category c ON c.id = p.category_id
-    JOIN product_types t ON t.id = p.type_id
-    JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
-    LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ?
-    ORDER BY p.created_at DESC`,
-    [categoryId]
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ? AND t.name IN (?)
+    GROUP BY pr.id
+    ORDER BY likeCount DESC
+    LIMIT ?, 9`,
+    [name, type.split(','), (page - 1) * 9]
+  );
+  return sort;
+};
+
+//3depth + type + 신상품순
+const newProductSort = async (name, type, page) => {
+  const sort = await myDataSource.query(
+    `SELECT
+      c.name AS category,
+      t.name AS type,
+      pr.name,
+      pr.description,
+      pr.created_at,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ? AND t.name IN (?)
+    GROUP BY pr.id
+    ORDER BY pr.created_at DESC
+    LIMIT ?, 9`,
+    [name, type.split(','), (page - 1) * 9]
   );
   return sort;
 };
 
 //낮은 가격순
-const priceAscSort = async categoryId => {
+const priceAscSort = async (name, type, page) => {
   const sort = await myDataSource.query(
-    `SELECT 
+    `SELECT
       c.name AS category,
       t.name AS type,
-      p.name,
-      p.description,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
       t_i.default_img,
       t_i.hover_img,
-      p.price_origin,
+      pr.price_origin,
       s_r.sale,
-      p.sale_price
-    FROM products p
-    JOIN category c ON c.id = p.category_id
-    JOIN product_types t ON t.id = p.type_id
-    JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
-    LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ?
-    ORDER BY p.price_origin ASC`,
-    [categoryId]
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ? AND t.name IN (?)
+    GROUP BY pr.id
+    ORDER BY pr.price_origin ASC
+    LIMIT ?, 9`,
+    [name, type.split(','), (page - 1) * 9]
   );
   return sort;
 };
 
 //높은 가격순
-const priceDescSort = async categoryId => {
+const priceDescSort = async (name, type, page) => {
   const sort = await myDataSource.query(
-    `SELECT 
+    `SELECT
       c.name AS category,
       t.name AS type,
-      p.name,
-      p.description,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
       t_i.default_img,
       t_i.hover_img,
-      p.price_origin,
+      pr.price_origin,
       s_r.sale,
-      p.sale_price
-    FROM products p
-    JOIN category c ON c.id = p.category_id
-    JOIN product_types t ON t.id = p.type_id
-    JOIN thumbnail_images t_i ON t_i.id = p.thumbnail_id
-    LEFT OUTER JOIN sale_rate s_r ON s_r.id = p.sale_rate_id
-    WHERE p.category_id = ?
-    ORDER BY p.price_origin DESC`,
-    [categoryId]
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    JOIN product_types t ON t.id = pr.type_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ? AND t.name IN (?)
+    GROUP BY pr.id
+    ORDER BY pr.price_origin DESC
+    LIMIT ?, 9`,
+    [name, type.split(','), (page - 1) * 9]
   );
   return sort;
 };
 
 module.exports = {
+  weeklyBest,
+  readTwoDepthCategory,
   readCategory,
   readProductType,
   reviewSort,
+  popularSort,
   newProductSort,
   priceAscSort,
   priceDescSort,
 };
 
+// readProducts,
 // reviewSort,
 // sortPurchase,
 // weeklyBest,
