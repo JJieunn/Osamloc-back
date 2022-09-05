@@ -15,9 +15,28 @@ const readTwoDepthCategory = async (id, page) => {
 };
 
 //3depth 제품 조회
-const readCategory = async (name, page) => {
-  const products = await productsDao.readCategory(name, page);
-  return products;
+const readThreeDepthReview = async (name, page) => {
+  return await productsDao.readThreeDepthReview(name, page);
+};
+
+//판매순
+const readThreeDepthPopular = async (name, page) => {
+  return await productsDao.readThreeDepthPopular(name, page);
+};
+
+//신상품순
+const readThreeDepthNewProduct = async (name, page) => {
+  return await productsDao.readThreeDepthNewProduct(name, page);
+};
+
+//낮은 가격순
+const readThreeDepthPriceAsc = async (name, page) => {
+  return await productsDao.readThreeDepthPriceAsc(name, page);
+};
+
+//높은 가격순
+const readThreeDepthPriceDesc = async (name, page) => {
+  return await productsDao.readThreeDepthPriceDesc(name, page);
 };
 
 //타입별 제품 조회 (잎차, 피라미드...)
@@ -59,7 +78,11 @@ const priceDescSort = async (name, type, page) => {
 module.exports = {
   weeklyBest,
   readTwoDepthCategory,
-  readCategory,
+  readThreeDepthReview,
+  readThreeDepthPopular,
+  readThreeDepthNewProduct,
+  readThreeDepthPriceAsc,
+  readThreeDepthPriceDesc,
   readProductType,
   reviewSort,
   popularSort,

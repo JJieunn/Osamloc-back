@@ -30,11 +30,58 @@ const readTwoDepthCategory = async (req, res) => {
 };
 
 //3depth 제품 조회
-const readCategory = async (req, res) => {
+const readThreeDepthReview = async (req, res) => {
   try {
     const { name, page } = req.query;
-    const categoryProducts = await productsService.readCategory(name, page);
+    const categoryProducts = await productsService.readThreeDepthReview(
+      name,
+      page
+    );
     res.status(200).json({ data: categoryProducts });
+  } catch (err) {
+    res.status(404).json({ message: 'ERROR' });
+  }
+};
+
+//판매순
+const readThreeDepthPopular = async (req, res) => {
+  try {
+    const { name, page } = req.query;
+    const sort = await productsService.readThreeDepthPopular(name, page);
+    res.status(200).json({ data: sort });
+  } catch (error) {
+    res.status(404).json({ message: 'ERROR' });
+  }
+};
+
+//신상품순
+const readThreeDepthNewProduct = async (req, res) => {
+  try {
+    const { name, page } = req.query;
+    const sort = await productsService.readThreeDepthNewProduct(name, page);
+    res.status(200).json({ data: sort });
+  } catch (err) {
+    res.status(404).json({ message: 'ERROR' });
+  }
+};
+
+//낮은 가격순
+const readThreeDepthPriceAsc = async (req, res) => {
+  try {
+    const { name, page } = req.query;
+    const sort = await productsService.readThreeDepthPriceAsc(name, page);
+    res.status(200).json({ data: sort });
+  } catch (err) {
+    res.status(404).json({ message: 'ERROR' });
+  }
+};
+
+//높은 가격순
+const readThreeDepthPriceDesc = async (req, res) => {
+  try {
+    const { name, type, page } = req.query;
+    const sort = await productsService.readThreeDepthPriceDesc(name, page);
+    res.status(200).json({ data: sort });
   } catch (err) {
     res.status(404).json({ message: 'ERROR' });
   }
@@ -109,7 +156,11 @@ const priceDescSort = async (req, res) => {
 module.exports = {
   weeklyBest,
   readTwoDepthCategory,
-  readCategory,
+  readThreeDepthReview,
+  readThreeDepthPopular,
+  readThreeDepthNewProduct,
+  readThreeDepthPriceAsc,
+  readThreeDepthPriceDesc,
   readProductType,
   reviewSort,
   popularSort,

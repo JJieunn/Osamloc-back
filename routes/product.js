@@ -10,7 +10,11 @@ router.get('/best/weekly', productsController.weeklyBest);
 
 // router.get('', productsController.readProducts);
 router.get('', productsController.readTwoDepthCategory);
-router.get('/category', productsController.readCategory);
+router.get('/category/review', productsController.readThreeDepthReview);
+router.get('/category/popular', productsController.readThreeDepthPopular);
+router.get('/category/new', productsController.readThreeDepthNewProduct);
+router.get('/category/price/asc', productsController.readThreeDepthPriceAsc);
+router.get('/category/price/desc', productsController.readThreeDepthPriceDesc);
 router.get('/category/type', productsController.readProductType);
 router.get('/category/type/review', productsController.reviewSort);
 router.get('/category/type/new', productsController.newProductSort);

@@ -43,7 +43,8 @@ const weeklyBest = async () => {
     t_i.hover_img,
     pr.price_origin,
     s_r.sale,
-    pr.sale_price
+    pr.sale_price,
+    pr.created_at
   FROM products pr
   LEFT OUTER JOIN review r ON pr.id = r.product_id
   JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
@@ -118,7 +119,7 @@ const readProductType = async (name, type) => {
 };
 
 //3depth + 리뷰순 조회
-const readCategory = async (name, page) => {
+const readThreeDepthReview = async (name, page) => {
   const categoryProducts = await myDataSource.query(
     `SELECT
       c.name AS category,
@@ -149,6 +150,135 @@ const readCategory = async (name, page) => {
     [name, (page - 1) * 9]
   );
   return categoryProducts;
+};
+
+//3depth + 판매순
+const readThreeDepthPopular = async (name, page) => {
+  const sort = await myDataSource.query(
+    `SELECT
+      c.name AS category,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ?
+    GROUP BY pr.id
+    ORDER BY likeCount DESC
+    LIMIT ?, 9`,
+    [name, (page - 1) * 9]
+  );
+  return sort;
+};
+
+//3depth + 신상품순
+const readThreeDepthNewProduct = async (name, page) => {
+  const sort = await myDataSource.query(
+    `SELECT
+      c.name AS category,
+      pr.name,
+      pr.description,
+      pr.created_at,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ?
+    GROUP BY pr.id
+    ORDER BY pr.created_at DESC
+    LIMIT ?, 9`,
+    [name, (page - 1) * 9]
+  );
+  return sort;
+};
+
+//3depth + 낮은 가격순
+const readThreeDepthPriceAsc = async (name, page) => {
+  const sort = await myDataSource.query(
+    `SELECT
+      c.name AS category,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ?
+    GROUP BY pr.id
+    ORDER BY pr.price_origin ASC
+    LIMIT ?, 9`,
+    [name, (page - 1) * 9]
+  );
+  return sort;
+};
+
+//3depth + 높은 가격순
+const readThreeDepthPriceDesc = async (name, page) => {
+  const sort = await myDataSource.query(
+    `SELECT
+      c.name AS category,
+      pr.name,
+      pr.description,
+      (SELECT COUNT(w.product_id)
+        FROM products p
+        LEFT OUTER JOIN product_wishlist w
+        ON p.id = w.product_id
+        WHERE p.id = pr.id) AS likeCount,
+      COUNT(r.product_id) AS reviewCount,
+      t_i.default_img,
+      t_i.hover_img,
+      pr.price_origin,
+      s_r.sale,
+      pr.sale_price
+    FROM products pr
+    JOIN category c ON c.id = pr.category_id
+    LEFT OUTER JOIN review r ON pr.id = r.product_id
+    JOIN thumbnail_images t_i ON t_i.id = pr.thumbnail_id
+    LEFT OUTER JOIN sale_rate s_r ON s_r.id = pr.sale_rate_id
+    WHERE c.name = ?
+    GROUP BY pr.id
+    ORDER BY pr.price_origin DESC
+    LIMIT ?, 9`,
+    [name, (page - 1) * 9]
+  );
+  return sort;
 };
 
 //3depth + 타입 + 리뷰순
@@ -325,7 +455,11 @@ const priceDescSort = async (name, type, page) => {
 module.exports = {
   weeklyBest,
   readTwoDepthCategory,
-  readCategory,
+  readThreeDepthReview,
+  readThreeDepthPopular,
+  readThreeDepthNewProduct,
+  readThreeDepthPriceAsc,
+  readThreeDepthPriceDesc,
   readProductType,
   reviewSort,
   popularSort,
