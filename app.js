@@ -10,6 +10,7 @@ const createApp = () => {
     app.use(express.json());
     app.use(logger('combined'));
     app.use(router);
+    app.use(express.static('public'));
 
     return app;
 }
