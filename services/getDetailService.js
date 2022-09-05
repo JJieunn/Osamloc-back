@@ -30,11 +30,11 @@ const productDetails = async (productId) => {
   const parentCategoryName = await getDetailDao.getCategoryName(parentCategoryId)
   details["parentCategory"] = parentCategoryName["name"]
 
-
   // 상세 페이지 리뷰 리스트
   const reviewRes = await getDetailDao.getReviewListInDetail(productId)
   const reviewAllCount = await getDetailDao.getNumberOfReviews(productId)
   
+  // 상세 페이지 별점
   const star = [];
   let average = 0;
   for(let i = 0;i<reviewRes.length;i++){
@@ -43,16 +43,23 @@ const productDetails = async (productId) => {
   }
   average = (average / star.length).toFixed(1)
   
-
   details["reviews"] = reviewRes
   details["reviewAllCount"] = reviewAllCount["count(id)"]
   details["imgReviewCount"] = reviewAllCount["count(image_url)"]
   details["rateAverage"] = average
 
   // 상품 추가 옵션
-  const optionRes = await getDetailDao.getProductOptions(productId)
-  details["options"] = JSON.parse(optionRes["JSON_ARRAYAGG(p.name)"])
+  // 반올림하지 않은 정확한 값을 위해 convert, cast 사용 안 함
+  const optionList = await getDetailDao.getOptionListsById(productId)
+  const options = [];
 
+  optionList.map((option) => { 
+    option["price_origin"] = Number(option["price_origin"])*1000
+    option["sale_price"] = Number(option["sale_price"])*1000
+    options.push(option)
+  })
+  details["options"] = options;
+  
   return details;
 }
 

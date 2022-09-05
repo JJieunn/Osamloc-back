@@ -19,7 +19,6 @@ router.get('/category/type/price/desc', productsController.priceDescSort);
 router.get('/category/type/popular', productsController.popularSort);
 
 //제품 상세 페이지
-// isValidateToken.validateToken,
 router.get("/item/:id", getDetailController.productDetails)
 
 module.exports = router;

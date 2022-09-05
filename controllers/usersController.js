@@ -46,7 +46,7 @@ const logInController = async (req, res) => {
     
     try{
         const token = await usersService.logInService(account, password)
-        res.status(200).json({ token })
+        res.status(200).json({ message: "LOGIN_SUCCESS", token })
     }
     catch (err) {
         console.log(err)

@@ -26,8 +26,8 @@ const getProductIdById = async (productId) => {
 
 const getDetailById = async (productId) => {
   const [queryRes] = await myDataSource.query(`
-    SELECT p.id, p.name, p.description, p.price_origin, p.sale_price,
-      p.sale_rate_id as sale_rate, s_r.sale, 
+    SELECT p.id, p.name, p.description, p.price_origin,
+      p.sale_price, s_r.sale, 
       c.name as category, c.parent_id as parentCategory,
       t_i.default_img as defaultImg, t_i.hover_img as hoverImg,
       JSON_ARRAYAGG(d_i.img_url) as detailImgs
@@ -53,9 +53,10 @@ const getCategoryName = async (parentId) => {
 // 리뷰
 const getReviewListInDetail = async (productId) => {
   const queryRes = await myDataSource.query(`
-    SELECT id, user_id, contents, image_url, rate, updated_at 
-    FROM review 
-    WHERE product_id = ? 
+    SELECT r.id, r.user_id,u.account, r.contents, r.image_url, r.rate, r.updated_at
+    FROM review r
+    JOIN users u ON r.user_id = u.id
+    WHERE product_id = ?
     ORDER BY updated_at DESC
   `, [productId])
   
@@ -71,19 +72,21 @@ const getNumberOfReviews = async (productId) => {
   return queryRes;
 }
 
-
-// 수정 필요
-const getProductOptions = async (productId) => {
-  const [queryRes] = await myDataSource.query(`
-  SELECT
-    JSON_ARRAYAGG(p.name)
-  FROM product_option p_o
-  JOIN products p
-  ON p_o.option_product_id = p.id
-  WHERE p_o.product_id = ?
-  GROUP BY p_o.product_id;
+// 옵션들의 이름 및 가격 정보
+const getOptionListsById = async (productId) => {
+  const queryRes = await myDataSource.query(`
+    SELECT
+      p_o.option_product_id,
+      p.name,
+      p.price_origin,
+      p.sale_price,
+      s_r.sale
+    FROM product_option p_o
+    JOIN products p ON p_o.option_product_id = p.id 
+    LEFT JOIN sale_rate s_r ON p.sale_rate_id = s_r.id
+    WHERE p_o.product_id = ?
   `, [productId])
-
+  
   return queryRes;
 }
 
@@ -94,5 +97,5 @@ module.exports = {
   getCategoryName,
   getReviewListInDetail,
   getNumberOfReviews,
-  getProductOptions 
+  getOptionListsById
 }
