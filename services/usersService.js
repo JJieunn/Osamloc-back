@@ -28,6 +28,19 @@ const signUpService = async (account, password, name, phone, birth) => {
 }
 
 
+// 회원가입 - account 중복 체크
+const isAccountExisted = async (account) => {
+    const checkRes = await usersDao.getUserByAccount(account);
+    if(checkRes) {
+        const err = new Error("ACCOUNT_EXISTED")
+        err.statusCode = 400
+        throw err;
+    }
+
+    return checkRes;
+}
+
+
 // 로그인
 const logInService = async (account, password) => {
     const userIdPw = await usersDao.getUserByAccount(account);
@@ -51,4 +64,4 @@ const logInService = async (account, password) => {
 
 
 
-module.exports = { signUpService, logInService }
+module.exports = { signUpService, isAccountExisted, logInService }

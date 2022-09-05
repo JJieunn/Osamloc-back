@@ -1,7 +1,7 @@
-const express = require("express")
-const cors = require("cors")
-const logger = require("morgan");
-const router = require("./routes/index")
+const cors = require('cors');
+const express = require('express');
+const logger = require('morgan');
+const router = require('./routes/index');
 
 const createApp = () => {
     
@@ -12,7 +12,7 @@ const createApp = () => {
     app.use(router);
     app.use(express.static('public'));
 
-    return app;
-}
+  return app;
+};
 
-module.exports = { createApp }
+module.exports = { createApp };

@@ -21,7 +21,7 @@ myDataSource
 
 
 const getUserByAccount = async (account) => {
-    const [queryRes] = await myDataSource.query(`SELECT account, password FROM users WHERE account = ?`, [account])
+    const [queryRes] = await myDataSource.query(`SELECT id, account, password FROM users WHERE account = ?`, [account])
     return queryRes;
 }
 

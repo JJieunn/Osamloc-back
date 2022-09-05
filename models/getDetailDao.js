@@ -53,9 +53,10 @@ const getCategoryName = async (parentId) => {
 // 리뷰
 const getReviewListInDetail = async (productId) => {
   const queryRes = await myDataSource.query(`
-    SELECT id, user_id, contents, image_url, rate, updated_at
-    FROM review 
-    WHERE product_id = ? 
+    SELECT r.id, r.user_id, u.account, r.contents, r.image_url, r.rate, r.updated_at
+    FROM review r
+    JOIN users u ON r.user_id = u.id
+    WHERE product_id = ?
     ORDER BY updated_at DESC
   `, [productId])
   

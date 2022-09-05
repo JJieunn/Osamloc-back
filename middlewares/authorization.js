@@ -1,5 +1,3 @@
-Authorization.js
-
 const { getUserByAccount } = require("../models/usersDao")
 // dao에 있는 user검색 함수 사용
 const jwt = require("jsonwebtoken");
