@@ -18,8 +18,8 @@ const createReviewController = async (req, res) => {
 
   try{
     // console.log("id : ", id, "product_id : ", product_id, "contents : ", contents)
-    const newReview = await reviewService.createReviewService(id, productId, contents, image_url, rate);
-    res.status(200).json({ message: "REVIEW_CREATED", newReview })
+    const reviews = await reviewService.createReviewService(id, productId, contents, image_url, rate);
+    res.status(200).json({ message: "REVIEW_CREATED", reviews })
   } catch (err) {
     console.log(err)
     res.status( err.statusCode || 500 ).json({ err: err.message })
@@ -32,10 +32,12 @@ const updateReviewController = async (req, res) => {
   const { id } = req.foundUser
   // reviewId는 어디로? body? params?
   const reviewId = Number(req.query.r_id)
-  // const { rate, newContents, image_url } = req.body
+  console.log(reviewId)
   // 상세 페이지에서 수정 요청을 하는데 productId가 필요한가?
   const productId = Number(req.params.id)
+  const { rate, contents, image_url } = req.body
   
+  /*
   // key에 들어온 값 구별
   const requireKey = ['rate', 'newContents', 'image_url']
   const hasKey = {rate: false, newContents: false, image_url: false}
@@ -49,16 +51,14 @@ const updateReviewController = async (req, res) => {
   const hasKeyArray = Object.entries(hasKey);
   for(let i = 0; i<hasKeyArray.length; i++) {
   const [key, value] = hasKeyArray[i]
-  if(!value) {
-    
+  if(value) {
+    console.log(value)
   }
 }
-
-
-  // productId,
-  try{
-    const reviewList = await reviewService.updateReviewService(id, reviewId)
-    res.status(200).json({ reviewList })
+*/
+try{
+    const reviewList = await reviewService.updateReviewService(id, reviewId, productId, image_url, contents, rate)
+    res.status(200).json({ message: "REVIEW_UPDATED", reviewList })
   } catch (err) {
     console.log(err)
     res.status( err.statusCode || 500 ).json({ err: err.message })

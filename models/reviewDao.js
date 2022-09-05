@@ -19,14 +19,22 @@ myDataSource
   });
 
 
-const getReviewByReviewId = async (reviewId) => {
+const getReviewByReviewId = async (reviewId, productId) => {
   const [queryRes] = await myDataSource.query(`
-    SELECT id FROM review WHERE id = ?
-  `, [reviewId])
+    SELECT id FROM review WHERE id = ? AND product_id = ?
+  `, [reviewId, productId])
 
   return queryRes;
 }
 
+// 구매한 사람인지 확인
+const getOrderStatusByUserId = async (userId, productId) => {
+  const [queryRes] = await myDataSource.query(`
+  SELECT COUNT(status) as count FROM cart_order WHERE user_id = ? AND product_id = ? AND status = 2
+  `, [userId, productId])
+
+  return queryRes;
+}
 
 const createReview = async (userId, productId, contents, image_url, rate) => {
   const queryRes = await myDataSource.query(`
@@ -36,9 +44,10 @@ const createReview = async (userId, productId, contents, image_url, rate) => {
   return queryRes;
 }
 
+/*
 // 대신 getDetailDao.js의 함수 사용
 const getReviewListByProductId = async (productId) => {
-  const queryRes = await myDataSource.query(`
+  const [queryRes] = await myDataSource.query(`
     SELECT id, user_id, contents, image_url, rate, created_at 
     FROM review 
     WHERE product_id = ? 
@@ -47,12 +56,29 @@ const getReviewListByProductId = async (productId) => {
 
   return queryRes;
 }
+*/
 
-
+// 리뷰 수정
 const updateReviewContents = async (reviewId, productId, newContents) => {
   const queryRes = await myDataSource.query(`
     UPDATE review SET contents = ? WHERE id = ?
   `, [newContents, reviewId])
+
+  return queryRes;
+}
+
+const updateReviewImgUrl = async (reviewId, productId, newImageUrl) => {
+  const queryRes = await myDataSource.query(`
+    UPDATE review SET image_url = ? WHERE id = ?
+  `, [newImageUrl, reviewId])
+
+  return queryRes;
+}
+
+const updateReviewRate = async (reviewId, productId, newRate) => {
+  const queryRes = await myDataSource.query(`
+    UPDATE review SET rate = ? WHERE id = ?
+  `, [newRate, reviewId])
 
   return queryRes;
 }
@@ -68,9 +94,10 @@ const deleteReview = async (reviewId) => {
 
 module.exports = {
   getReviewByReviewId,
+  getOrderStatusByUserId,
   createReview,
-  getReviewListByProductId,
   updateReviewContents,
-
+  updateReviewImgUrl,
+  updateReviewRate,
   deleteReview
 }
