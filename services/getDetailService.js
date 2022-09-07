@@ -5,17 +5,17 @@ const productDetails = async (productId) => {
   // 제품 유무 확인
   const isProductExisted = await getDetailDao.getProductIdById(productId)
   if(!isProductExisted) {
-    const err = new Error("NON_PRODUCT_EXISTED")
-    err.statusCode = 404 // 존재하지 않는 제품 페이지 요청
-    throw err;
+    const error = new Error("PRODUCT_NOT_EXIST")
+    error.statusCode = 404 // 존재하지 않는 제품 페이지 요청
+    throw error;
   }
 
   const details = await getDetailDao.getDetailById(productId)
 
   if(!details) {
-    const err = new Error("GET_DETAIL_PAGE_ERROR")
-    err.statusCode = 500
-    throw err;
+    const error = new Error("GET_DETAIL_PAGE_ERROR")
+    error.statusCode = 500
+    throw error;
   }
 
   // string으로 가져온 값들 number로 변환
