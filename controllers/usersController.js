@@ -42,6 +42,7 @@ const logInController = async (req, res) => {
     // keyError
     if(!(account && password)) {
         res.status(400).json({ error: "INPUT_ERROR" })
+        return;
     }
     
     try{

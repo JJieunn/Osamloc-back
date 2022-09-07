@@ -6,6 +6,7 @@ const productDetails = async (req, res) => {
   const productId = product.id;
   if(productId === ":id") {
     res.status(404).json({ error: "PARAMS_IN_REQUEST_ERROR" })
+    return;
   }
   
   try{

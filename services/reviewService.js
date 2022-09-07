@@ -21,6 +21,13 @@ const createReviewService = async (userId, productId, content, imgUrl, rate) => 
     throw error;
   }
 
+ // 길이 에러가 리뷰 존재한다보다 먼저? 나중?
+  if(content.length > 60) {
+    const error = new Error("CONTENTS_TOO_LONG")
+    error.statusCode = 400
+    throw error;
+  }
+
   await reviewDao.createReview(userId, productId, content, imgUrl, rate);
   const newReviewList = getDetailDao.getReviewListInDetail(productId);
 
@@ -45,7 +52,6 @@ const updateReviewService = async (userId, reviewId, productId, newImgUrl, newCo
     throw error;
   }
 
-console.log("contents : ", newContent, "img : ", newImgUrl, "rate : ", newRate)
   if(newContent !== undefined) {
     await reviewDao.updateReviewContent(reviewId, productId, newContent)
   }
@@ -56,7 +62,6 @@ console.log("contents : ", newContent, "img : ", newImgUrl, "rate : ", newRate)
     await reviewDao.updateReviewRate(reviewId, productId, newRate)
   }
 
-  // await reviewDao.updateReview(reviewId, productId, newImage_url, newContents, newRate)
   const newReviewList = getDetailDao.getReviewListInDetail(productId)
 
   return newReviewList;
@@ -74,16 +79,6 @@ const deleteReviewService = async (userId, reviewId, productId) => {
     error.statusCode = 400
     throw error;
   }
-
-  /*
-  const isUserOrderProduct = await reviewDao.getOrderStatusByUserId(userId, productId)
-
-  if(isUserOrderProduct < 1) {
-    const error = new Error("구매 안함")
-    error.statusCode = 400
-    throw error;
-  }
-  */
   
   // 삭제
   await reviewDao.deleteReview(reviewId, productId)
