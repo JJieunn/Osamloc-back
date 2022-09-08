@@ -1,10 +1,9 @@
 const getDetailService = require('../services/getDetailService');
-
 const productDetails = async (req, res) => {
   const product = req.params;
   const productId = product.id;
   if (productId === ':id') {
-    res.status(400).json({ error: 'PARAMS_IN_REQUEST_ERROR' });
+    res.status(404).json({ error: 'PARAMS_IN_REQUEST_ERROR' });
     return;
   }
 
@@ -17,5 +16,4 @@ const productDetails = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
-
 module.exports = { productDetails };

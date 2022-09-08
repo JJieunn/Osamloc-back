@@ -14,6 +14,7 @@ const signUpService = async (account, password, name, phone, birth) => {
   }
 
   const isUserPhoneExisted = await usersDao.getUserByPhone(phone);
+
   if (isUserPhoneExisted) {
     // phone number로 user 확인
     const error = new Error('USER_EXISTED');
@@ -23,7 +24,6 @@ const signUpService = async (account, password, name, phone, birth) => {
     // 둘 다 없으면
     const salt = bcrypt.genSaltSync(15);
     const hashedPw = bcrypt.hashSync(password, salt);
-
     const user = await usersDao.createUser(
       account,
       hashedPw,
