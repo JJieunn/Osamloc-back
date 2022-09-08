@@ -1,24 +1,21 @@
-const getDetailService = require("../services/getDetailService")
-
+const getDetailService = require('../services/getDetailService');
 
 const productDetails = async (req, res) => {
   const product = req.params;
   const productId = product.id;
-  if(productId === ":id") {
-    res.status(400).json({ err: "PARAMS_IN_REQUEST_ERROR" })
+  if (productId === ':id') {
+    res.status(400).json({ error: 'PARAMS_IN_REQUEST_ERROR' });
+    return;
   }
-  
-  try{
+
+  try {
     // 제품 상세 페이지
     const getDetail = await getDetailService.productDetails(productId);
-    res.status(200).json({ data: getDetail })
-
-  } catch (err) {
-    console.log(err)
-    res.status( err.statusCode || 500 ).json({ err: err.message })
+    res.status(200).json({ data: getDetail });
+  } catch (error) {
+    console.log(error);
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
+};
 
-}
-
-
-module.exports = { productDetails }
+module.exports = { productDetails };
