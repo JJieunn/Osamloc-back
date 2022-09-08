@@ -1,66 +1,82 @@
 const productsDao = require('../models/productDao');
 
-//위클리 베스트
+//타입별 전체제품 조회 (잎차, 피라미드...)
+const readProductType = async (name, type) => {
+  return await productsDao.readProductType(name, type);
+};
+
+const readThreeDepth = async name => {
+  return await productsDao.readThreeDepth(name);
+};
+
 const weeklyBest = async () => {
   return await productsDao.weeklyBest();
 };
 
-/* const readProducts = async () => {
-  return await productsDao.readProducts();
-}; */
+const weeklyBestSort = async () => {
+  return await productsDao.weeklyBestSort();
+};
 
-//2depth 제품 조회
+const productBest = async () => {
+  return await productsDao.productBest();
+};
+
 const readTwoDepthCategory = async (id, page) => {
   return await productsDao.readTwoDepthCategory(id, page);
 };
 
-//3depth 제품 조회
-const readCategory = async (name, page) => {
-  const products = await productsDao.readCategory(name, page);
-  return products;
+const readThreeDepthReview = async (name, page) => {
+  return await productsDao.readThreeDepthReview(name, page);
 };
 
-//타입별 제품 조회 (잎차, 피라미드...)
-const readProductType = async (name, type) => {
-  const products = await productsDao.readProductType(name, type);
-
-  products.map(data => {
-    data.products = JSON.parse(data.products);
-  });
-
-  return products;
+const readThreeDepthPopular = async (name, page) => {
+  return await productsDao.readThreeDepthPopular(name, page);
 };
 
-//리뷰순
+const readThreeDepthNewProduct = async (name, page) => {
+  return await productsDao.readThreeDepthNewProduct(name, page);
+};
+
+const readThreeDepthPriceAsc = async (name, page) => {
+  return await productsDao.readThreeDepthPriceAsc(name, page);
+};
+
+const readThreeDepthPriceDesc = async (name, page) => {
+  return await productsDao.readThreeDepthPriceDesc(name, page);
+};
+
 const reviewSort = async (name, type, page) => {
   return await productsDao.reviewSort(name, type, page);
 };
 
-//판매순
 const popularSort = async (name, type, page) => {
   return await productsDao.popularSort(name, type, page);
 };
 
-//신상품순
 const newProductSort = async (name, type, page) => {
   return await productsDao.newProductSort(name, type, page);
 };
 
-//낮은 가격순
 const priceAscSort = async (name, type, page) => {
   return await productsDao.priceAscSort(name, type, page);
 };
 
-//높은 가격순
 const priceDescSort = async (name, type, page) => {
   return await productsDao.priceDescSort(name, type, page);
 };
 
 module.exports = {
-  weeklyBest,
-  readTwoDepthCategory,
-  readCategory,
   readProductType,
+  readThreeDepth,
+  weeklyBest,
+  weeklyBestSort,
+  productBest,
+  readTwoDepthCategory,
+  readThreeDepthReview,
+  readThreeDepthPopular,
+  readThreeDepthNewProduct,
+  readThreeDepthPriceAsc,
+  readThreeDepthPriceDesc,
   reviewSort,
   popularSort,
   newProductSort,
