@@ -5,7 +5,8 @@ const productDetails = async (req, res) => {
   const product = req.params;
   const productId = product.id;
   if(productId === ":id") {
-    res.status(400).json({ err: "PARAMS_IN_REQUEST_ERROR" })
+    res.status(404).json({ error: "PARAMS_IN_REQUEST_ERROR" })
+    return;
   }
   
   try{
@@ -13,9 +14,9 @@ const productDetails = async (req, res) => {
     const getDetail = await getDetailService.productDetails(productId);
     res.status(200).json({ data: getDetail })
 
-  } catch (err) {
-    console.log(err)
-    res.status( err.statusCode || 500 ).json({ err: err.message })
+  } catch (error) {
+    console.log(error)
+    res.status( error.statusCode || 500 ).json({ error: error.message })
   }
 
 }
