@@ -67,35 +67,35 @@ const getReviewListByProductId = async (productId) => {
 */
 
 // 리뷰 수정
-const updateReviewContent = async (reviewId, productId, newContent) => {
+const updateReviewContent = async (userId, productId, newContent) => {
   const queryRes = await myDataSource.query(`
-    UPDATE review SET content = ? WHERE id = ?
-  `, [newContent, reviewId])
+    UPDATE review SET content = ? WHERE user_id = ? AND product_id =  ?
+  `, [newContent, userId, productId])
 
   return queryRes;
 }
 
-const updateReviewImgUrl = async (reviewId, productId, newImageUrl) => {
+const updateReviewImgUrl = async (userId, productId, newImageUrl) => {
   const queryRes = await myDataSource.query(`
-    UPDATE review SET image_url = ? WHERE id = ?
-  `, [newImageUrl, reviewId])
+    UPDATE review SET image_url = ? WHERE id = ? AND user_id = ?
+  `, [newImageUrl, userId, productId])
 
   return queryRes;
 }
 
-const updateReviewRate = async (reviewId, productId, newRate) => {
+const updateReviewRate = async (userId, productId, newRate) => {
   const queryRes = await myDataSource.query(`
-    UPDATE review SET rate = ? WHERE id = ?
-  `, [newRate, reviewId])
+    UPDATE review SET rate = ? WHERE id = ? AND user_id = ?
+  `, [newRate, userId, productId])
 
   return queryRes;
 }
 
 
-const deleteReview = async (reviewId, productId) => {
+const deleteReview = async (userId, productId) => {
   await myDataSource.query(`
-    DELETE FROM review WHERE id = ? AND product_id = ?
-  `, [reviewId, productId])
+    DELETE FROM review WHERE user_id = ? AND product_id = ?
+  `, [userId, productId])
 }
 
 

@@ -34,7 +34,6 @@ const createReviewController = async (req, res) => {
 // 리뷰 수정
 const updateReviewController = async (req, res) => {
   const { id } = req.foundUser
-  const reviewId = req.query.r_id
   const productId = req.params.id
   const { rate, content, image_url } = req.body
   
@@ -43,19 +42,17 @@ const updateReviewController = async (req, res) => {
     res.status(401).json({ error: "NEED_LOGIN" })
     return;
   }
-  
   if(!image_url && !content && !rate) {
     res.status(400).json({ error: "INPUT_ERROR" })
     return;
     }
-  
   if(content !== undefined && content.length > 60) {
     res.status(400).json({ error: "CONTENTS_TOO_LONG" })
     return;
   }
 
 try{
-    const reviewList = await reviewService.updateReviewService(id, reviewId, productId, image_url, content, rate)
+    const reviewList = await reviewService.updateReviewService(id, productId, image_url, content, rate)
     res.status(200).json({ message: "REVIEW_UPDATED", reviewList })
   } catch (error) {
     console.log(error)
@@ -67,7 +64,6 @@ try{
 // 리뷰 삭제
 const deleteReviewController = async (req, res) => {
   const { id } = req.foundUser
-  const reviewId = req.query.r_id
   const productId = req.params.id
 
 
@@ -76,13 +72,8 @@ const deleteReviewController = async (req, res) => {
     return;
   }
 
-  if(!(reviewId && productId)) {
-    res.status(400).json({ error: "REQUEST_ERROR" })
-    return;
-  }
-
   try{
-    const reviewList = await reviewService.deleteReviewService(id, reviewId, productId)
+    const reviewList = await reviewService.deleteReviewService(id, productId)
     res.status(200).json({ message: "REVIEW_DELETED", reviewList })
   } catch (error) {
     console.log(error)

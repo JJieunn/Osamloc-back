@@ -21,7 +21,6 @@ const createReviewService = async (userId, productId, content, imgUrl, rate) => 
     throw error;
   }
 
- // 길이 에러가 리뷰 존재한다보다 먼저? 나중?
   if(content.length > 60) {
     const error = new Error("CONTENTS_TOO_LONG")
     error.statusCode = 400
@@ -36,14 +35,16 @@ const createReviewService = async (userId, productId, content, imgUrl, rate) => 
 
 
 // 리뷰 수정
-const updateReviewService = async (userId, reviewId, productId, newImgUrl, newContent, newRate) => {
-  const isReviewExisted = await reviewDao.getReviewByReviewId(reviewId, productId)
-  console.log(isReviewExisted)
+const updateReviewService = async (userId, productId, newImgUrl, newContent, newRate) => {
+  
+  const isReviewExisted = await reviewDao.getReviewByUserId(userId, productId)
+
   if(!isReviewExisted) {
     const error = new Error("REVIEW_NOT_EXIST")
     error.statusCode = 400
     throw error;
   }
+  
 
   const isUserOrderProduct = await reviewDao.getOrderStatusByUserId(userId, productId)
   if(isUserOrderProduct < 1) {
@@ -53,13 +54,13 @@ const updateReviewService = async (userId, reviewId, productId, newImgUrl, newCo
   }
 
   if(newContent !== undefined) {
-    await reviewDao.updateReviewContent(reviewId, productId, newContent)
+    await reviewDao.updateReviewContent(userId, productId, newContent)
   }
   if(newImgUrl !== undefined) {
-    await reviewDao.updateReviewImgUrl(reviewId, productId, newImgUrl)
+    await reviewDao.updateReviewImgUrl(userId, productId, newImgUrl)
   }
   if(newRate !== undefined) {
-    await reviewDao.updateReviewRate(reviewId, productId, newRate)
+    await reviewDao.updateReviewRate(userId, productId, newRate)
   }
 
   const newReviewList = getDetailDao.getReviewListInDetail(productId)
@@ -70,9 +71,9 @@ const updateReviewService = async (userId, reviewId, productId, newImgUrl, newCo
 
 
 // 리뷰 삭제
-const deleteReviewService = async (userId, reviewId, productId) => {
-  // 리뷰 유무 확인
-  const isReviewExisted = await reviewDao.getReviewByReviewId(reviewId, productId)
+const deleteReviewService = async (userId, productId) => {
+
+  const isReviewExisted = await reviewDao.getReviewByUserId(userId, productId)
 
   if(!isReviewExisted) {
     const error = new Error("REVIEW_NOT_EXIST")
@@ -80,9 +81,7 @@ const deleteReviewService = async (userId, reviewId, productId) => {
     throw error;
   }
   
-  // 삭제
-  await reviewDao.deleteReview(reviewId, productId)
-  // 목록 새로고침
+  await reviewDao.deleteReview(userId, productId)
   const newReviewList = getDetailDao.getReviewListInDetail(productId)
 
   return newReviewList;

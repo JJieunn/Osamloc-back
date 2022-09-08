@@ -57,7 +57,7 @@ const logInService = async (account, password) => {
         error.statusCode = 400
         throw error;
     } else if(isPasswordCorrect) {
-        const token = jwt.sign({ userAccount: userIdPw.account}, SECRET_KEY , { expiresIn: '20m' })
+        const token = jwt.sign({ userAccount: userIdPw.account}, SECRET_KEY , { expiresIn: '1d' })
         return token;
     }
 }

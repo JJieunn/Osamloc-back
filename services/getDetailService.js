@@ -56,6 +56,7 @@ const productDetails = async (productId) => {
   optionList.map((option) => { 
     option["price_origin"] = Number(option["price_origin"])*1000
     option["sale_price"] = Number(option["sale_price"])*1000
+    option["view"] = false
     options.push(option)
   })
   details["options"] = options;
