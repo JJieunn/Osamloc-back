@@ -1,4 +1,5 @@
 const express = require('express');
+
 const isValidateToken = require('../middlewares/authorization');
 const productsController = require('../controllers/product');
 const getDetailController = require('../controllers/getDetailController');

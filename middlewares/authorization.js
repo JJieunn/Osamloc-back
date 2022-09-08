@@ -1,5 +1,6 @@
 const { getUserByAccount } = require('../models/usersDao');
 // dao에 있는 user검색 함수 사용
+
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = process.env;
 
@@ -20,6 +21,7 @@ const validateToken = async (req, res, next) => {
       const error = new Error('USER_NOT_FOUND');
       error.statusCode = 404;
       throw error;
+
     }
     req.foundUser = foundUser;
     next();

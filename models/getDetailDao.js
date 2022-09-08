@@ -63,6 +63,7 @@ const getReviewListInDetail = async productId => {
   const queryRes = await myDataSource.query(
     `
   SELECT r.id, r.user_id, u.account, r.content, r.image_url, r.rate,
+
     DATE_FORMAT(r.updated_at, '%Y.%m.%d') as date
     FROM review r
     JOIN users u ON r.user_id = u.id

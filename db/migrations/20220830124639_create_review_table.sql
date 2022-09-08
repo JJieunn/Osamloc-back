@@ -3,7 +3,7 @@ create table review(
     id int not null auto_increment primary key,
     user_id int not null,
     product_id int not null,
-    contents varchar(2000),
+    content varchar(2000),
     image_url varchar(2000),
     rate int,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),

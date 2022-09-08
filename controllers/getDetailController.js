@@ -2,6 +2,7 @@ const getDetailService = require('../services/getDetailService');
 const productDetails = async (req, res) => {
   const product = req.params;
   const productId = product.id;
+
   if (productId === ':id') {
     res.status(404).json({ error: 'PARAMS_IN_REQUEST_ERROR' });
     return;
