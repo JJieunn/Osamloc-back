@@ -9,12 +9,10 @@ const readThreeDepth = async name => {
   return await productsDao.readThreeDepth(name);
 };
 
-const weeklyBest = async () => {
-  return await productsDao.weeklyBest();
-};
+const weeklyBest = async productSort => {
+  const sort = orderBy(productSort);
 
-const weeklyBestSort = async () => {
-  return await productsDao.weeklyBestSort();
+  return await productsDao.weeklyBest(sort);
 };
 
 const productBest = async () => {
@@ -25,65 +23,48 @@ const readTwoDepthCategory = async (id, page) => {
   return await productsDao.readTwoDepthCategory(id, page);
 };
 
-const readThreeDepthReview = async (name, page) => {
-  return await productsDao.readThreeDepthReview(name, page);
+const threeDepthCategorySort = async (name, productSort, page) => {
+  const sort = orderBy(productSort);
+
+  return await productsDao.threeDepthCategorySort(name, sort, page);
 };
 
-const readThreeDepthPopular = async (name, page) => {
-  return await productsDao.readThreeDepthPopular(name, page);
+const productTypeSort = async (name, type, productSort, page) => {
+  const sort = orderBy(productSort);
+
+  return await productsDao.productTypeSort(name, type, sort, page);
 };
 
-const readThreeDepthNewProduct = async (name, page) => {
-  return await productsDao.readThreeDepthNewProduct(name, page);
-};
+const orderBy = productSort => {
+  const sortOrderBy = {
+    review: 'ORDER BY reviewCount DESC',
+    popular: 'ORDER BY likeCount DESC',
+    newProduct: 'ORDER BY pr.created_at DESC',
+    priceAsc:
+      'ORDER BY CASE WHEN sale_price is null THEN price_origin ELSE sale_price END ASC',
+    priceDesc:
+      'ORDER BY CASE WHEN sale_price is null THEN price_origin ELSE sale_price END DESC',
+  };
 
-const readThreeDepthPriceAsc = async (name, page) => {
-  return await productsDao.readThreeDepthPriceAsc(name, page);
-};
-
-const readThreeDepthPriceDesc = async (name, page) => {
-  return await productsDao.readThreeDepthPriceDesc(name, page);
-};
-
-const reviewSort = async (name, type, page) => {
-  return await productsDao.reviewSort(name, type, page);
-};
-
-const popularSort = async (name, type, page) => {
-  return await productsDao.popularSort(name, type, page);
-};
-
-const newProductSort = async (name, type, page) => {
-  return await productsDao.newProductSort(name, type, page);
-};
-
-const priceAscSort = async (name, type, page) => {
-  return await productsDao.priceAscSort(name, type, page);
-};
-
-const priceDescSort = async (name, type, page) => {
-  return await productsDao.priceDescSort(name, type, page);
+  if (productSort === 'review') {
+    return sortOrderBy.review;
+  } else if (productSort === 'popular') {
+    return sortOrderBy.popular;
+  } else if (productSort === 'new') {
+    return sortOrderBy.newProduct;
+  } else if (productSort === 'price-asc') {
+    return sortOrderBy.priceAsc;
+  } else if (productSort === 'price-desc') {
+    return sortOrderBy.priceDesc;
+  } else return null;
 };
 
 module.exports = {
   readProductType,
   readThreeDepth,
   weeklyBest,
-  weeklyBestSort,
   productBest,
   readTwoDepthCategory,
-  readThreeDepthReview,
-  readThreeDepthPopular,
-  readThreeDepthNewProduct,
-  readThreeDepthPriceAsc,
-  readThreeDepthPriceDesc,
-  reviewSort,
-  popularSort,
-  newProductSort,
-  priceAscSort,
-  priceDescSort,
+  threeDepthCategorySort,
+  productTypeSort,
 };
-
-// reviewSort,
-// sortPurchase,
-// weeklyBest,
