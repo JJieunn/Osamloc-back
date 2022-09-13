@@ -24,18 +24,10 @@ const readThreeDepth = async (req, res) => {
 
 //위클리 베스트
 const weeklyBest = async (req, res) => {
-  try {
-    const products = await productsService.weeklyBest();
-    res.status(200).json({ data: products });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
+  const { sort } = req.query;
 
-//위클리 베스트 + 리뷰순
-const weeklyBestSort = async (req, res) => {
   try {
-    const products = await productsService.weeklyBestSort();
+    const products = await productsService.weeklyBest(sort);
     res.status(200).json({ data: products });
   } catch (error) {
     res.status(404).json({ message: 'ERROR' });
@@ -67,105 +59,31 @@ const readTwoDepthCategory = async (req, res) => {
 };
 
 //3depth 제품 조회
-const readThreeDepthReview = async (req, res) => {
-  const { name, page } = req.query;
+const threeDepthCategorySort = async (req, res) => {
+  const { name, sort, page } = req.query;
   try {
-    const categoryProducts = await productsService.readThreeDepthReview(
+    const products = await productsService.threeDepthCategorySort(
       name,
+      sort,
       page
     );
-    res.status(200).json({ data: categoryProducts });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const readThreeDepthPopular = async (req, res) => {
-  const { name, page } = req.query;
-  try {
-    const sort = await productsService.readThreeDepthPopular(name, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const readThreeDepthNewProduct = async (req, res) => {
-  const { name, page } = req.query;
-  try {
-    const sort = await productsService.readThreeDepthNewProduct(name, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const readThreeDepthPriceAsc = async (req, res) => {
-  const { name, page } = req.query;
-  try {
-    const sort = await productsService.readThreeDepthPriceAsc(name, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const readThreeDepthPriceDesc = async (req, res) => {
-  const { name, page } = req.query;
-  try {
-    const sort = await productsService.readThreeDepthPriceDesc(name, page);
-    res.status(200).json({ data: sort });
+    res.status(200).json({ data: products });
   } catch (error) {
     res.status(404).json({ message: 'ERROR' });
   }
 };
 
 //3depth + type + (sort)
-const reviewSort = async (req, res) => {
-  const { name, type, page } = req.query;
+const productTypeSort = async (req, res) => {
+  const { name, type, sort, page } = req.query;
   try {
-    const sort = await productsService.reviewSort(name, type, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const popularSort = async (req, res) => {
-  const { name, type, page } = req.query;
-  try {
-    const sort = await productsService.popularSort(name, type, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const newProductSort = async (req, res) => {
-  const { name, type, page } = req.query;
-  try {
-    const sort = await productsService.newProductSort(name, type, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const priceAscSort = async (req, res) => {
-  const { name, type, page } = req.query;
-  try {
-    const sort = await productsService.priceAscSort(name, type, page);
-    res.status(200).json({ data: sort });
-  } catch (error) {
-    res.status(404).json({ message: 'ERROR' });
-  }
-};
-
-const priceDescSort = async (req, res) => {
-  const { name, type, page } = req.query;
-  try {
-    const sort = await productsService.priceDescSort(name, type, page);
-    res.status(200).json({ data: sort });
+    const products = await productsService.productTypeSort(
+      name,
+      type,
+      sort,
+      page
+    );
+    res.status(200).json({ data: products });
   } catch (error) {
     res.status(404).json({ message: 'ERROR' });
   }
@@ -175,21 +93,8 @@ module.exports = {
   readProductType,
   readThreeDepth,
   weeklyBest,
-  weeklyBestSort,
   productBest,
   readTwoDepthCategory,
-  readThreeDepthReview,
-  readThreeDepthPopular,
-  readThreeDepthNewProduct,
-  readThreeDepthPriceAsc,
-  readThreeDepthPriceDesc,
-  reviewSort,
-  popularSort,
-  newProductSort,
-  priceAscSort,
-  priceDescSort,
+  threeDepthCategorySort,
+  productTypeSort,
 };
-
-// reviewSort,
-// sortPurchase,
-// weeklyBest,
