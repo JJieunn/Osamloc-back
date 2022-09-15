@@ -15,9 +15,6 @@
 
 - __백엔드__ : 김교은, 박지은  
 
-- __백엔드 블로그__  :
-  [김교은](https://velog.io/@gyoeun666), [박지은]링크 
-
 - __[프론트엔드 GitHub](https://github.com/wecode-bootcamp-korea/justcode-6-1st-osamloc-front)__ 
 
 - __[팀 노션](https://www.notion.so/wecode/93b4fdf1dd4b49dd9b2fe71f7b85d8d0)__
