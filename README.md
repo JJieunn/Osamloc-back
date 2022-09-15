@@ -1,1 +1,99 @@
-# node-project
+# Osamloc Project
+
+---
++ 국내 대표 차(Tea) 브랜드 '[오설록](https://www.osulloc.com/kr/ko)'을 모티브로 한 프로젝트입니다.
+
+
++ 사이트 선정 이유~~
+
+![오설록](https://user-images.githubusercontent.com/108418225/190359024-709b2df0-3249-4708-8e2f-7d6bcb38c07a.png)
+
+
+## 1. 개발 기간 및 인원
+---
+> __개발 기간__  : 2022.08.29 ~ 2022.09.08
+
+>  __프론트엔드__ : 유상호, 김정연, 이동호, 이유나  
+
+>  __백엔드__ : 김교은, 박지은  
+
++ __백엔드 블로그__  :
+  [김교은](https://velog.io/@gyoeun666), [박지은]링크 
+
++ __[프론트엔드 GitHub](https://github.com/wecode-bootcamp-korea/justcode-6-1st-osamloc-front)__ 
+
++ __[팀 노션](https://www.notion.so/wecode/93b4fdf1dd4b49dd9b2fe71f7b85d8d0)__
+
+
+## 2. 데이터 모델링
+---
+:paperclip:  [dbdiogram 링크](https://dbdiagram.io/d/631550500911f91ba5332730)   
+
+![디비](https://user-images.githubusercontent.com/108418225/190328843-2bbf8125-2c98-43a3-a3d0-f31fd9613631.png)
+
+
+
+## 3. 시연 영상
+---
+:paperclip: 유튜브 링크
+  
+gif?
+
+
+## 4. 적용 기술 및 구현 기능
+---
+### 4-1. 적용 기술
++ Back-end : JavaScript, Node.js, Express, Bcrypt, JWT
++ Database : MySQL 
++ HTTP : Postman, live share  
++ Common : Slack, Zep, Notion, Git&Github
+
+  
+
+### 4-2. 구현 기능
+
+>김교은  
+
++ 카테고리 API  
+
+      ....
++ 상품 리스트 API  
+
+      ....
++ 상품 정렬 API  
+
+      ....
++ 장바구니 / 결제 API  
+
+      ....
+
+
+
+
+>박지은
++ 회원가입 API
+
+      계정, 이름, 비밀 번호, 폰 번호, 생일을 입력받아 회원 가입
+      계정과 폰 번호의 중복 체크, 비밀번호를 해시 함수로 암호화하는 기능 포함
++ 로그인 API 
+
+      아이디와 비밀 번호를 입력 받아 로그인
+      로그인에 성공하면 토큰을 발급
++ 상품 상세 페이지 API   
+
+      path variable로 상품 PK를 받아와 해당 상품의 이름, 가격, 카테고리, 상품 이미지, 리뷰 수, 리뷰(작성자, 이미지, 내용, 별점, 작성 날짜), 옵션을 가져옴
++ 리뷰 API
+  
+      상품 PK와 token을 복호화해 얻은 user PK, 별점, 내용, 이미지(null 가능) 입력 받아 review 테이블에 저장
+      해당 상품 구매 횟수만큼 리뷰 작성 가능(비구매는 작성 불가)
+      리뷰 작성자와 로그인 user PK가 같아야 리뷰 수정 / 삭제 가능
+      리뷰 PK를 받아 해당 리뷰를 수정 / 삭제
+
+
+## 4. API Docs
+---
+:paperclip: [회원가입 / 로그인 / 상품 상세 페이지 / 리뷰 API](https://documenter.getpostman.com/view/22723173/VUxVrQLd)  
+:paperclip: [카테고리 / 상품 필터, 정렬 / 상품 리스트 API](https://documenter.getpostman.com/view/22723465/VUxXKNsa)  
+:paperclip: [장바구니 / 결제 API](https://documenter.getpostman.com/view/22723465/VVBQX98b)  
+
+
