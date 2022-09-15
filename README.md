@@ -1,9 +1,6 @@
 # Osamloc Project
-
 ---
 + 국내 대표 차(Tea) 브랜드 '[오설록](https://www.osulloc.com/kr/ko)'을 모티브로 한 프로젝트입니다.
-
-
 + 사이트 선정 이유~~
 
 ![오설록](https://user-images.githubusercontent.com/108418225/190359024-709b2df0-3249-4708-8e2f-7d6bcb38c07a.png)
@@ -32,7 +29,6 @@
 ![디비](https://user-images.githubusercontent.com/108418225/190328843-2bbf8125-2c98-43a3-a3d0-f31fd9613631.png)
 
 
-
 ## 3. 시연 영상
 ---
 :paperclip: 유튜브 링크
@@ -42,13 +38,12 @@ gif?
 
 ## 4. 적용 기술 및 구현 기능
 ---
-### 4-1. 적용 기술
+### 4-1. 적용 기술(수정 필요)
 + Back-end : JavaScript, Node.js, Express, Bcrypt, JWT
 + Database : MySQL 
 + HTTP : Postman, live share  
 + Common : Slack, Zep, Notion, Git&Github
 
-  
 
 ### 4-2. 구현 기능
 
@@ -69,7 +64,6 @@ gif?
 
 
 
-
 >박지은
 + 회원가입 API
 
@@ -81,7 +75,8 @@ gif?
       로그인에 성공하면 토큰을 발급
 + 상품 상세 페이지 API   
 
-      path variable로 상품 PK를 받아와 해당 상품의 이름, 가격, 카테고리, 상품 이미지, 리뷰 수, 리뷰(작성자, 이미지, 내용, 별점, 작성 날짜), 옵션을 가져옴
+      path variable로 상품 PK를 받아와 해당 상품의 이름, 가격, 카테고리, 상품 이미지, 
+      리뷰 수, 리뷰(작성자, 이미지, 내용, 별점, 작성 날짜), 옵션을 가져옴
 + 리뷰 API
   
       상품 PK와 token을 복호화해 얻은 user PK, 별점, 내용, 이미지(null 가능) 입력 받아 review 테이블에 저장
