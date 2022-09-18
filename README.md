@@ -35,7 +35,9 @@
 ## 3. 시연 영상
 
 :paperclip: 유튜브 링크 - https://www.youtube.com/watch?v=jhNUPFSqefA (약 5분)
-  
+ 
+![gif](https://user-images.githubusercontent.com/108418225/190913988-c26d1266-07fe-4767-94e4-f8e4fb31dbbe.png)
+
   
 
 ## 4. 적용 기술 및 구현 기능
