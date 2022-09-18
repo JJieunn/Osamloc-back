@@ -107,7 +107,7 @@
   
 ## 5. API Docs
 
-:paperclip: [회원가입 / 로그인 / 품 상세 페이지 / 리뷰 API](https://documenter.getpostman.com/view/22723173/VUxVrQLd)  
+:paperclip: [회원가입 / 로그인 / 제품 상세 페이지 / 리뷰 API](https://documenter.getpostman.com/view/22723173/VUxVrQLd)  
 :paperclip: [카테고리 / 제품 필터, 정렬 / 제품 리스트 API](https://documenter.getpostman.com/view/22723465/VUxXKNsa)  
 :paperclip: [장바구니 / 결제 API](https://documenter.getpostman.com/view/22723465/VVBQX98b)  
 
