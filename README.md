@@ -40,7 +40,7 @@
 
 ## 4. 적용 기술 및 구현 기능
 
-### 4-1. 적용 기술(수정 필요)
+### 4-1. 적용 기술(프론트 수정 필요)
 + Back-end : JavaScript, Node.js, Express, bcrypt, JWT
 + Database : MySQL 
 + HTTP : Postman
@@ -51,14 +51,14 @@
 >프론트엔드
 
 - 유상호
- - - 제품 상세페이지
+  - 제품 상세 페이지
     - 제품별 댓글
-        - 로그인 했을때만 댓글 추가가능
+        - 로그인 했을 때만 댓글 추가 가능
         - 내가 쓴 댓글만 삭제, 수정 가능
     - 상단 오른쪽 제품 갯수, 추가상품
         - 장바구니 클릭시 상품 갯수 포함 API 전달
         - 장바구니에 이미 존재하는 상품일 때 갯수만 추가
-- 제품 리스트 UI
+  - 제품 리스트 UI
     - 상위 필터 API
         - 리뷰많은순, 판매순, 신상품순, 높은 가격순, 낮은 가격순
     - 하위 필터 API
@@ -72,11 +72,11 @@
    - header   
 
 - 이동호
-  - cart
+  - 장바구니
     - filter
     - modal
     - checkbox
-  - payment
+  - 결제
     - filter
     - modal
     - 정규식 검증
@@ -93,13 +93,13 @@
 
 - 김교은  
   - 카테고리 API  
-  - 상품 리스트 API  
-  - 상품 정렬 API  
+  - 제품 리스트 API  
+  - 제품 정렬 API  
   - 장바구니 / 결제 API  
 
 - 박지은
   - 회원가입 / 로그인 API 
-  - 상품 상세 페이지 API   
+  - 제품 상세 페이지 API   
   - 리뷰 API
   
 
@@ -107,8 +107,8 @@
   
 ## 5. API Docs
 
-:paperclip: [회원가입 / 로그인 / 상품 상세 페이지 / 리뷰 API](https://documenter.getpostman.com/view/22723173/VUxVrQLd)  
-:paperclip: [카테고리 / 상품 필터, 정렬 / 상품 리스트 API](https://documenter.getpostman.com/view/22723465/VUxXKNsa)  
+:paperclip: [회원가입 / 로그인 / 품 상세 페이지 / 리뷰 API](https://documenter.getpostman.com/view/22723173/VUxVrQLd)  
+:paperclip: [카테고리 / 제품 필터, 정렬 / 제품 리스트 API](https://documenter.getpostman.com/view/22723465/VUxXKNsa)  
 :paperclip: [장바구니 / 결제 API](https://documenter.getpostman.com/view/22723465/VVBQX98b)  
 
 
